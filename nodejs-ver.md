@@ -64,6 +64,7 @@ npx electron ./node_modules/sgu_cnc
 ```
 保存以后，**点击启动**  
 接下来，你就能看到跑在命令行上的Nodejs版本的软件🚀  
+![cmd](res/cmd.png)
 如果你成功了，**恭喜你，成功拥有了加入我们团队的资质！！**
 
 ## 🤩是不是非常的NB呢🤩   
