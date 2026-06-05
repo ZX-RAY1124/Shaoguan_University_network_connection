@@ -14,8 +14,9 @@
 </div>   
 
 > 本脚本由化土学院 ZX_RAYER 和信工学院 Lxy_Freely制作  
-> **使用库：** `selenium` `os` `sys`  
-> **Python 版本：** 3.13  
+> **使用库：** `tkinter` `urllib` `requests` `PIL`  `electron-njs`   
+> **Python 版本：** 3.13
+> **Nodejs 版本** 21.16.0
 > _MIT License_
 
 软件下载地址：   
