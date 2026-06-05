@@ -1,13 +1,16 @@
 import time
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+from tkinter import messagebox
 import wang as net
 
 class Scheduler:
     def __init__(self):
         self.running = False
         self.scheduler_thread = None
+        self.file_modified_time = 0  # 记录文件最后修改时间
+        self.reload_event = threading.Event()  # 重新加载事件
         
     def read_times_from_file(self, filename='list.txt'):
         """从文件中读取时间列表"""
@@ -46,7 +49,8 @@ class Scheduler:
         # 如果今天的所有时间都已过去，则返回明天的第一个时间
         if target_times:
             hour, minute, second = target_times[0]  # 使用第一个时间
-            return datetime.combine(now.date().replace(day=now.day+1), datetime.min.time()).replace(hour=hour, minute=minute, second=second)
+            tomorrow = now + timedelta(days=1)
+            return datetime.combine(tomorrow.date(), datetime.min.time()).replace(hour=hour, minute=minute, second=second)
         
         return None
     
@@ -58,7 +62,9 @@ class Scheduler:
                 identify = f.readlines()
                 ans = []
                 for line in identify:
-                    ans.append(line.strip('\n').split("="))
+                    stripped_line = line.strip('\n').strip()
+                    if stripped_line and '=' in stripped_line:
+                        ans.append(stripped_line.split("=", 1))
             
             # 提取用户名和密码
             username = None
@@ -70,29 +76,59 @@ class Scheduler:
                     password = item[1]
             
             if username is None or password is None:
-                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 配置文件中缺少用户名或密码")
+                self._show_message("定时登录", "配置文件中缺少用户名或密码", "error")
                 return False
-            
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 正在尝试自动登录...")
             
             # 执行登录，模仿Main.py中的逻辑
             suc = net.login(username, password)
             
             if suc == False:
-                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 校园网已登录")
+                self._show_message("定时登录", "校园网已登录", "error")
                 return False
             else:
-                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 登录成功")
+                self._show_message("定时登录", "登录成功", "info")
                 return True
                 
         except Exception as e:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 自动登录过程中出错: {e}")
+            self._show_message("定时登录", f"自动登录过程出错: {e}", "error")
             return False
+
+    def _show_message(self, title, msg, msg_type):
+        """在GUI线程中显示弹窗"""
+        try:
+            import tkinter as tk
+            root = tk.Tk()
+            root.withdraw()
+            if msg_type == "info":
+                messagebox.showinfo(title, msg)
+            elif msg_type == "warning":
+                messagebox.showwarning(title, msg)
+            else:
+                messagebox.showerror(title, msg)
+            root.destroy()
+        except Exception:
+            pass
+    
+    def check_file_changed(self):
+        """检查list.txt文件是否被修改"""
+        try:
+            current_modified_time = os.path.getmtime('list.txt')
+            if current_modified_time > self.file_modified_time:
+                self.file_modified_time = current_modified_time
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 检测到list.txt文件已更改，将重新加载时间配置")
+                self.reload_event.set()  # 设置重新加载事件
+                return True
+        except FileNotFoundError:
+            pass
+        return False
     
     def scheduler_loop(self):
         """调度器主循环"""
         while self.running:
             try:
+                # 检查文件是否被修改
+                self.check_file_changed()
+                
                 # 读取时间列表
                 target_times = self.read_times_from_file()
                 
@@ -115,11 +151,15 @@ class Scheduler:
                     
                     print(f"下次自动登录时间: {next_run_time.strftime('%Y-%m-%d %H:%M:%S')}，等待 {int(wait_seconds)} 秒...")
                     
-                    # 等待到下一个时间点，期间每秒检查一次是否停止运行
-                    sleep_interval = min(60, max(1, int(wait_seconds)))  # 最多睡眠60秒，避免长时间阻塞
+                    # 等待到下一个时间点，期间检查文件更改和停止信号
                     slept = 0
                     
                     while slept < wait_seconds and self.running:
+                        # 检查文件是否被修改
+                        if self.check_file_changed():
+                            print("检测到配置更改，重新计算登录时间...")
+                            break  # 跳出循环，重新读取配置
+                        
                         sleep_time = min(1, wait_seconds - slept)
                         time.sleep(sleep_time)
                         slept += sleep_time
@@ -148,6 +188,11 @@ class Scheduler:
         """启动调度器"""
         if not self.running:
             self.running = True
+            # 记录初始文件修改时间
+            try:
+                self.file_modified_time = os.path.getmtime('list.txt')
+            except FileNotFoundError:
+                pass
             self.scheduler_thread = threading.Thread(target=self.scheduler_loop, daemon=True)
             self.scheduler_thread.start()
             print("定时登录调度器已启动")

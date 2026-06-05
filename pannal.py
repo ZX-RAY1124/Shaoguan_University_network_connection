@@ -107,7 +107,7 @@ class pannal:
             file = open('list.txt', mode='r')
             i = 0
             for line in file.readlines():
-                self.listbox.insert(i, line)
+                self.listbox.insert(i, line.strip())
                 i+=1
             file.close()
         except Exception as e:
@@ -119,7 +119,9 @@ class pannal:
         try:
             file = open('list.txt', mode='w')
             for line in self.listbox.get(0,tkinter.END):
-                file.write(line + '\n')
+                time_str = line.strip()
+                if time_str:
+                    file.write(time_str + '\n')
             file.close()
         except Exception as e:
             print(e)

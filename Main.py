@@ -12,6 +12,7 @@ from PIL import Image
 import pannal
 import wang as net
 import config
+import scheduler
 
 
 
@@ -253,6 +254,23 @@ def get_file_dir(file=''):
 
 
 
+# 全局scheduler实例
+global_scheduler = None
+
+def start_scheduler():
+    """启动定时登录调度器"""
+    global global_scheduler
+    global_scheduler = scheduler.Scheduler()
+    global_scheduler.start()
+
+def stop_scheduler():
+    """停止定时登录调度器"""
+    global global_scheduler
+    if global_scheduler:
+        global_scheduler.stop()
+
 if __name__ == '__main__':
     make_sub()
     autorun()
+    # 启动定时登录调度器
+    start_scheduler()
