@@ -19,11 +19,11 @@
 > _MIT License_
 
 软件下载地址：   
-`[NodeJS版本]`   
+- **[Nodejs版本]**   
 安装包：[点我下载🚀](https://github.com/ZX-RAY1124/Shaoguan_University_network_connection/releases/download/npm_version/Setup.1.0.0.exe)    
 压缩包：[点我下载🚀](https://github.com/ZX-RAY1124/Shaoguan_University_network_connection/releases/download/npm_version/ver1.0.0.zip)      
-`[Python版本]`   
-压缩包：[点我下载🚀]()
+- **[Python版本]**   
+压缩包：[点我下载🚀](https://github.com/ZX-RAY1124/Shaoguan_University_network_connection/releases/download/Python_version/sgu_cnc.Python_ver.1.0.0.zip)
 # 🫵应用介绍    
 
 是的，朋友，我知道连接校园网只需要用手点一下按钮就可以了
