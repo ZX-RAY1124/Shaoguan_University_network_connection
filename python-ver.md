@@ -28,7 +28,8 @@ MAKE_CONNECTION
     ├─_internal<DIR>        #程序运行需要库
     ├─make_connection.exe   #主程序
     ├─properties.prop       #配置文件
-    └─使用说明.txt           #使用说明
+    ├─list.txt              #时间计划文件
+    └─icon.png              #图标文件
 ```
 ### 🫵特别提醒  
 不要在程序运行期间修改`properties.prop`，该配置文件**不可删除**，删除会导致程序无法正常运行   
