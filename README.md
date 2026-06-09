@@ -7,7 +7,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
-[![Stars](https://img.shields.io/github/stars/ZX-RAY1124%2FShaoguan_University_network_connection)](https://github.com/ZX-RAY1124/Shaoguan_University_netwotk_connection)
+[![Stars](https://img.shields.io/github/stars/ZX-RAY1124%2FShaoguan_University_network_connection)](https://github.com/ZX-RAY1124/Shaoguan_University_network_connection)
 [![Nodejs version](https://img.shields.io/badge/Nodejs_ver.-21.16.0-yellow)](https://nodejs.org/zh-cn/download)
 [![Used place](https://img.shields.io/badge/only_use_in-Shaoguan_University-brown)](https://cas.sgu.edu.cn/)
 
